@@ -15,8 +15,16 @@ void print(initializer_list<int> vals)
     cout << endl;
 }
 
+class P
+{
+public:
+    P(int, int) {}
+    P(initializer_list<int>) {}
+};
+
 int main()
 {
+    {
     int i;      // i has undefined value
     int j{};    // j is initialized by 0
     int* p;     // p has undefined value
@@ -26,6 +34,7 @@ int main()
     cout << "j = " << j << '\n';
     cout << "p = " << p << '\n';    // warning C4700: uninitialized local variable 'p' used
     cout << "q = " << q << '\n';
+    }
     /*
     i = 15365038        // undefined value
     j = 0
@@ -33,6 +42,7 @@ int main()
     q = 00000000
     */
 
+   {
     int x1(5.3);        // OK, but x1 = 5 (narrowing conversiont)
     int x2 = 5.3;       // OK, but x2 = 5
     //int x3{5.0};      // error: narrowing initialization not OK
@@ -45,6 +55,7 @@ int main()
     cout << "x1 = " << x1 << '\n';
     cout << "x2 = " << x2 << '\n';
     cout << "c1 = " << c1 << '\n';
+   }
     /*
     x1 = 5      // value narrowed
     x2 = 5      // value narrowed
@@ -52,6 +63,16 @@ int main()
     */
 
     print({12, 3, 5, 7, 11, 13, 17});   // pass a list of values to print()
+
+    /*
+    When there are constructors for both a specific number of arguments and an initializer list, the version with the initializer list is prefered.
+    */
+   {
+    P p(77, 5);         // calls P::P(int, int)
+    P q{77, 5};         // calls P::P(initializer_list)
+    P r{77, 5, 42};     // calls P::P(initializer_list)
+    P s = {77, 5};      // calls P::P(initializer_list)
+   }
 
     return 0;
 }
