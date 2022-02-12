@@ -1,11 +1,10 @@
+/*
+3.1.3. Unimform Initializtion and Initializer lists
+*/
 #include <iostream>
 #include <vector>
 
 using namespace std;
-
-/*
-3.1.3. Unimform Initializtion and Initializer lists
-*/
 
 void print(initializer_list<int> vals)
 {
@@ -21,6 +20,15 @@ public:
     P(int, int) {}
     P(initializer_list<int>) {}
 };
+
+class P1
+{
+public:
+    P1(int a, int b) {}
+    explicit P1(int a, int b, int c) {}
+};
+
+void fp(const P1&) {}
 
 int main()
 {
@@ -74,7 +82,18 @@ int main()
     P s = {77, 5};      // calls P::P(initializer_list)
    }
 
+    {
+    P1 x(77, 5);
+    P1 y{77, 5};
+    P1 z{77, 5, 42};
+    P1 v = {77, 5};     // OK: implicit type conversion allowed
+    // P1 w = {77, 5, 42}; // Error: due to explicit, no implicit type conversion allowed
+
+    fp({47, 11});   // OK: implicit conversion of {47,11} into P
+    // fp({47, 11, 3});    // Error: explicit prevents implicity conversion
+    fp(P1{47, 11}); // OK: explicit conversion of {47,11} into P
+    fp(P1{47, 11, 3});  // OK: explicit conversion of {47,11,3} into P
+    }
+
     return 0;
 }
-
-
